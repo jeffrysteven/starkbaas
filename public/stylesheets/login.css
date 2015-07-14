@@ -1,0 +1,24 @@
+body{
+	color: #FFF;
+}
+.scc{
+	height: 100vh;
+	background: #2a2e39;
+}
+.scc > .container{
+	padding-top: 10%;
+	display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
+.item__image{
+	margin: 0 auto;
+}
+.centered{
+	text-align: center;
+	margin: 0 auto;
+}

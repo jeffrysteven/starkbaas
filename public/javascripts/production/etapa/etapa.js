@@ -1,0 +1,125 @@
+angular.module('production.etapa',['ui.router','etapaServices'])
+.config(function config( $stateProvider ) {
+  $stateProvider.state( '/etapa', {
+    url: '/etapa',
+    views: {
+      "main": {
+        controller: 'EtapaCtrl',
+        templateUrl: 'partials/etapa/etapa'
+      }
+    },
+    data:{ pageTitle: 'Etapa' }
+  })
+  .state('/etapa/list', {
+    url: '/etapa/list',
+    views: {
+      "main": {
+        controller: 'EtapaCtrl',
+        templateUrl: 'partials/etapa/etapa_list'
+      }
+    },
+    data:{ pageTitle: 'Etapa' }
+  })
+  .state('etapa_edit', {
+    url: '/etapa_edit/:id',
+    views: {
+      "main": {
+        controller: 'EtapaCtrl',
+        templateUrl: 'partials/etapa/etapa_edit'
+      }
+    },
+    data:{ pageTitle: 'Etapa' }
+  })
+})
+.controller( 'EtapaCtrl', function EtapaCtrl( $scope, $location, etapaFactory, $stateParams) {
+  $scope.rowCollection = [];
+  $scope.displayedCollection = [];
+  $scope.createEtapa = function () {
+    var defaultEtapa = {
+      nombre: "",
+      descripcion: ""
+    };
+    var etapa = $scope.etapa;
+    var data = etapaFactory.saveEtapa($.param(etapa));
+    data.
+    success(function(data, status, headers, config) {
+      $scope.etapaForm.$setPristine();
+      $scope.etapa = defaultEtapa;
+      sweetAlert("Exito!", "Creado Satisfactoriamente!", "success");
+      setTimeout(function(){
+        $scope.$apply(function() { $location.path('/etapa/list') });
+      },1500);
+    }).
+    error(function(data, status, headers, config) {
+      console.log('Error: ' + data);
+    });
+  },
+  $scope.getEtapas = function getEtapas(tableState) {
+    $scope.isLoading = true;
+    var pagination = tableState.pagination;
+    var start = tableState.pagination.start || 0;     // This is NOT the page number, but the index of item in the list that you want to use to display the table.
+    tableState.pagination.start = start;
+    var number = tableState.pagination.number || 10;  // Number of entries showed per page.
+    tableState.pagination.number = number;
+    etapaFactory.getEtapas(start, number, tableState, function(datos){
+      datos.then(function (result) {
+        $scope.displayedCollection = result.data;
+        tableState.pagination.numberOfPages = result.numberOfPages;//set the number of pages so the pagination can update
+        $scope.isLoading = false;
+      });
+    });
+  },
+  $scope.removeItem = function removeItem(row){
+    sweetAlert({
+      title: "Estas seguro?",
+      text: "Si eliminas este registro, no podrás recuperarlo!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "Sí, eliminalo!",
+      cancelButtonText: "Cancelar",
+      closeOnConfirm: false
+    },
+    function(){
+      var data = etapaFactory.deleteEtapa(row.id);
+      data.
+      success(function(data, status) {
+        var index = $scope.displayedCollection.indexOf(row);
+        if (index !== -1) {
+            $scope.displayedCollection.splice(index, 1);
+            sweetAlert("Eliminado!", "El registro ha sido eliminado.", "success");
+        }
+      }).
+      error(function(data, status, headers, config) {
+        console.log('Error: ' + data);
+      });
+    });
+  },
+  $scope.updateEtapa = function () {
+    var etapa = $scope.etapa;
+    var data = etapaFactory.updateEtapa($stateParams.id, $.param(etapa));
+    data.
+    success(function(data, status, headers, config) {
+      $scope.etapaForm.$setPristine();
+      sweetAlert("Exito!", "Actualizado Satisfactoriamente!", "success");
+      setTimeout(function(){
+        $scope.$apply(function() { $location.path('/etapa/list') });
+      },1500);
+    }).
+    error(function(data, status, headers, config) {
+      console.log('Error: ' + data);
+    });
+  },
+  $scope.getEtapa = function getEtapa() {
+    var datos = etapaFactory.getEtapa($stateParams.id);
+    datos.
+    success(function (data, status, headers, config) {
+
+      var defaultEtapa = {
+        nombre: data.nombre,
+        descripcion: data.descripcion
+      };
+      $scope.etapa = defaultEtapa;
+    });
+  }
+});
