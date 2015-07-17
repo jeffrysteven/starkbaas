@@ -103,16 +103,20 @@ router.post('/object/:object', RestEnsureAuthorized, function(req, res) {
 			var data = req.body;
 			var objModel = {tableName: table};
 			var object = bookshelf.Model.extend(objModel);
-			new object(data).save().then(function(model) {
-		  		new object({id:model.attributes.id}).fetch()
-			    .then(function(content) {
-			      res.send(content.toJSON());
-			    }).catch(function(error) {
-			      res.json(error);
-			    });
-			}).catch(function(err){
-				res.json(err);
-			});
+			if(Object.keys(data).length > 0){
+				new object(data).save().then(function(model) {
+			  		new object({id:model.attributes.id}).fetch()
+				    .then(function(content) {
+				      res.send(content.toJSON());
+				    }).catch(function(error) {
+				      res.json(error);
+				    });
+				}).catch(function(err){
+					res.json(err);
+				});
+			} else {
+				res.json({'response':"No se encontraron datos en su request",'res':false, 'status': 403});
+			}
     	}else{
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
@@ -121,6 +125,66 @@ router.post('/object/:object', RestEnsureAuthorized, function(req, res) {
       res.send('An error occured'+error);
     });
 });
+
+// búsquedas begin
+router.post('/objectsearch/:object', RestEnsureAuthorized, function(req, res) {
+	var objSec = bookshelf.Model.extend({
+		tableName: 'user'
+	});
+	new objSec({token: req.token}).fetch()
+    .then(function(user) {
+    	if (user) {
+    		var table = req.params.object;
+			var data = req.body;
+			var objModel = {tableName: table};
+			var object = bookshelf.Model.extend(objModel);
+			if(Object.keys(data).length > 0){
+				new object().where(data).fetchAll().then(function(model) {
+					res.send(model.toJSON());
+				}).catch(function(err){
+					res.json(err);
+				});
+			} else {
+				res.json({'response':"No se encontraron datos en su request",'res':false, 'status': 403});
+			}
+    	}else{
+    		res.json({'response':"Token not valid",'res':false, 'status': 600});
+    	}
+    }).catch(function(error) {
+      console.log(error);
+      res.send('An error occured'+error);
+    });
+});
+
+router.get('/objectsearch/:object', RestEnsureAuthorized, function(req, res) {
+	var objSec = bookshelf.Model.extend({
+		tableName: 'user'
+	});
+	new objSec({token: req.token}).fetch()
+    .then(function(user) {
+    	if (user) {
+    		var table = req.params.object;
+			var data = req.query;
+			var objModel = {tableName: table};
+			var object = bookshelf.Model.extend(objModel);
+			if(Object.keys(data).length > 0){
+				new object().where(data).fetchAll().then(function(model) {
+					res.send(model.toJSON());
+				}).catch(function(err){
+					res.json(err);
+				});
+			} else {
+				res.json({'response':"No se encontraron datos en su request",'res':false, 'status': 403});
+			}
+    	}else{
+    		res.json({'response':"Token not valid",'res':false, 'status': 600});
+    	}
+    }).catch(function(error) {
+      console.log(error);
+      res.send('An error occured'+error);
+    });
+});
+// búsquedas end
 
 router.get('/object/:object', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
