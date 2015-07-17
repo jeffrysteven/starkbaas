@@ -13,8 +13,7 @@ var dbConfig = {
     password: 'stk_root*/.',
     database: 'logistica',
     charset: 'utf8'
-  },
-  debug: true
+  }
 };
 var knex = require('knex')(dbConfig);
 var bookshelf = require('bookshelf')(knex);
