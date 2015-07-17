@@ -105,7 +105,12 @@ router.post('/object/:object', RestEnsureAuthorized, function(req, res) {
 			var objModel = {tableName: table};
 			var object = bookshelf.Model.extend(objModel);
 			new object(data).save().then(function(model) {
-		  		res.json(model.attributes);
+		  		new object({id:model.attributes.id}).fetch()
+			    .then(function(content) {
+			      res.send(content.toJSON());
+			    }).catch(function(error) {
+			      res.json(error);
+			    });
 			}).catch(function(err){
 				res.json(err);
 			});
