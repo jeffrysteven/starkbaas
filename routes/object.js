@@ -140,7 +140,11 @@ router.post('/objectsearch/:object', RestEnsureAuthorized, function(req, res) {
 			if(Object.keys(data).length > 0){
 				new object().where(data).fetchAll().then(function(model) {
 					if (model.toJSON().length > 0) {
-						res.send(model.toJSON());
+						var resdata = {};
+						resdata.res = true;
+						resdata.data = model.toJSON();
+						resdata.status = 200;
+						res.send(resdata);
 					}else{
 						res.json({'response':"No hay datos para su consulta", 'res':false, 'status': 200});
 					}
@@ -173,7 +177,11 @@ router.get('/objectsearch/:object', RestEnsureAuthorized, function(req, res) {
 			if(Object.keys(data).length > 0){
 				new object().where(data).fetchAll().then(function(model) {
 					if (model.toJSON().length > 0) {
-						res.send(model.toJSON());
+						var resdata = {};
+						resdata.res = true;
+						resdata.data = model.toJSON();
+						resdata.status = 200;
+						res.send(resdata);
 					}else{
 						res.json({'response':"No hay datos para su consulta", 'res':false, 'status': 200});
 					}
