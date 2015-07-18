@@ -126,7 +126,6 @@ router.post('/object/:object', RestEnsureAuthorized, function(req, res) {
     });
 });
 
-// búsquedas begin
 router.post('/objectsearch/:object', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
@@ -140,7 +139,11 @@ router.post('/objectsearch/:object', RestEnsureAuthorized, function(req, res) {
 			var object = bookshelf.Model.extend(objModel);
 			if(Object.keys(data).length > 0){
 				new object().where(data).fetchAll().then(function(model) {
-					res.send(model.toJSON());
+					if (model.toJSON().length > 0) {
+						res.send(model.toJSON());
+					}else{
+						res.json({'response':"No hay datos para su consulta", 'res':false, 'status': 200});
+					}
 				}).catch(function(err){
 					res.json(err);
 				});
@@ -169,7 +172,11 @@ router.get('/objectsearch/:object', RestEnsureAuthorized, function(req, res) {
 			var object = bookshelf.Model.extend(objModel);
 			if(Object.keys(data).length > 0){
 				new object().where(data).fetchAll().then(function(model) {
-					res.send(model.toJSON());
+					if (model.toJSON().length > 0) {
+						res.send(model.toJSON());
+					}else{
+						res.json({'response':"No hay datos para su consulta", 'res':false, 'status': 200});
+					}
 				}).catch(function(err){
 					res.json(err);
 				});
@@ -184,7 +191,6 @@ router.get('/objectsearch/:object', RestEnsureAuthorized, function(req, res) {
       res.send('An error occured'+error);
     });
 });
-// búsquedas end
 
 router.get('/object/:object', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
