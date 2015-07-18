@@ -12,7 +12,8 @@ var dbConfig = {
     user: 'root',
     password: 'stk_root*/.',
     database: 'logistica',
-    charset: 'utf8'
+    charset: 'utf8',
+    timezone: 'utc-5'
   }
 };
 var knex = require('knex')(dbConfig);
