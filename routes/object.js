@@ -944,10 +944,6 @@ function uploadBase64Files(req, res, next){
 					        	nameArr = url.split("/");
 					        	nameFile = nameArr[(nameArr.length)-1];
 					        	pos = fileNamesArr.indexOf(nameFile);
-					        	console.log(fileNamesArr);
-					        	console.log(filesArr);
-					        	console.log(pos);
-					        	console.log(filesArr[pos]);
 					        	req.body[filesArr[pos]] = data.Location;
 			        			if (countFiles == i) {
 			        				next();
