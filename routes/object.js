@@ -23,8 +23,8 @@ var knex = require('knex')(dbConfig);
 var bookshelf = require('bookshelf')(knex);
 
 var awsconfig ={
-	"accessKeyId": "AKIAJUQNY6KVJXZH5UMQ",
-	"secretAccessKey": "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",
+	"accessKeyId": "xxxxxx",
+	"secretAccessKey": "xxxxxx",
 	"region": "us-west-2"
 };
 
