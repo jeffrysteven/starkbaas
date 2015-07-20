@@ -4,6 +4,9 @@ var Promise = require('bluebird');
 var jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var rand = require('csprng');
+var multer  = require('multer');
+var AWS = require('aws-sdk');
+var fs = require('fs');
 
 var dbConfig = {
   client: 'mysql',
@@ -18,6 +21,16 @@ var dbConfig = {
 };
 var knex = require('knex')(dbConfig);
 var bookshelf = require('bookshelf')(knex);
+
+var awsconfig ={
+	"accessKeyId": "AKIAJUQNY6KVJXZH5UMQ",
+	"secretAccessKey": "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",
+	"region": "us-west-2"
+};
+
+AWS.config.update(awsconfig);
+
+var fileBucket = new AWS.S3({params: {Bucket: 'logisticastarkmbaas'}});
 
 router.post('/filter/:object', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
@@ -93,7 +106,7 @@ router.post('/filter/:object', RestEnsureAuthorized, function(req, res) {
     });
 });
 
-router.post('/object/:object', RestEnsureAuthorized, function(req, res) {
+router.post('/object/:object', [RestEnsureAuthorized, multer(), uploadBase64Files, uploadFiles], function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -530,7 +543,7 @@ router.get('/object/:object/:id', RestEnsureAuthorized, function(req, res) {
     });
 });
 
-router.put('/object/:object/:id', RestEnsureAuthorized, function(req, res) {
+router.put('/object/:object/:id', [RestEnsureAuthorized, multer(), uploadBase64Files, uploadFiles], function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -890,6 +903,175 @@ function RestEnsureAuthorized(req, res, next) {
     	res.status(403).send({'response':"Token not found",'res':false, 'status': 403});
         //res.send(403);
     }
+}
+
+function uploadBase64Files(req, res, next){
+	var datos = req.body;
+	var regex = /[0-9a-zA-Z\+/=]{20,}/;
+	var regexurl = /^(http(?:s)?\:\/\/[a-zA-Z0-9]+(?:(?:\.|\-)[a-zA-Z0-9]+)+(?:\:\d+)?(?:\/[\w\-]+)*(?:\/?|\/\w+\.[a-zA-Z]{2,4}(?:\?[\w]+\=[\w\-]+)?)?(?:\&[\w]+\=[\w\-]+)*)$/;
+	var filesArr = [];
+	var fileNamesArr = [];
+	var theFile = [];
+	var url = "";
+	var nameFile = "";
+	var nameArr = [];
+	var pos = 0;
+	var i = 1;
+	var k = 1;
+	if (Object.keys(datos).length > 0) {
+		var countFiles = 0;
+		for(var data in datos) {
+			if (!regexurl.test(datos[data])) {
+				if (regex.test(datos[data])) {
+					countFiles++;
+				}
+			}
+		}
+		if (countFiles > 0) {
+			for(var data in datos) {
+				if (!regexurl.test(datos[data])) {
+					if (regex.test(datos[data])) {
+						var theFile = datos[data];
+						filesArr[k] = data;
+						var s3filename = rand(160, 36)+Date.now();
+						fileNamesArr[k] = s3filename+getExtensionFromMime(guessFileMime(datos[data]));
+						uploadBase64ToS3(new Buffer(datos[data], 'base64'), datos[data], s3filename, function (err, data) {
+							if (err) {
+					            console.error(err);
+					            res.status(500).send('failed to upload to s3').end();
+			        		}else{
+			        			url = data.Location;
+					        	nameArr = url.split("/");
+					        	nameFile = nameArr[(nameArr.length)-1];
+					        	pos = fileNamesArr.indexOf(nameFile);
+					        	console.log(fileNamesArr);
+					        	console.log(filesArr);
+					        	console.log(pos);
+					        	console.log(filesArr[pos]);
+					        	req.body[filesArr[pos]] = data.Location;
+			        			if (countFiles == i) {
+			        				next();
+			        			};
+			        			i++;
+			        		}
+						});
+						k++;
+					}
+				}
+			}
+		} else {
+			next();
+		}
+	}
+}
+
+function uploadFiles (req, res, next) {
+	var files = req.files;
+	if (Object.keys(files).length > 0) {
+		var countFiles = Object.keys(files).length;
+		var i = 1;
+		var k = 1;
+		var filesArr = [];
+		var fileNamesArr = [];
+		var filePathsArr = [];
+		var theFile = [];
+		var url = "";
+		var nameFile = "";
+		var nameArr = [];
+		var pos = 0;
+		for(var file in files) {
+			var theFile = files[file];
+			filesArr[k] = file;
+			fileNamesArr[k] = theFile.name;
+			filePathsArr[k] = theFile.path;
+			uploadToS3(theFile, theFile.name, theFile.extension, function (err, data) {
+		        if (err) {
+		            console.error(err);
+		            res.status(500).send('failed to upload to s3').end();
+		        }else{
+		        	url = data.Location;
+		        	nameArr = url.split("/");
+		        	nameFile = nameArr[(nameArr.length)-1];
+		        	pos = fileNamesArr.indexOf(nameFile);
+		        	req.body[filesArr[pos]] = data.Location;
+		        	fs.unlink(filePathsArr[pos], function (err) {
+			    		if (err) {
+			    			res.status(600).send(err);
+			    		}
+	    			});
+		        	if (countFiles == i) {
+		        		next();
+		        	};
+		        	i++;
+		        }
+	    	});
+	    	k++;
+		}
+	} else {
+		next();
+	}
+}
+
+function uploadToS3(file, destFileName, extension, callback) {
+    fileBucket.upload({
+            ACL: 'public-read',
+            Body: fs.createReadStream(file.path),
+            Key: destFileName.toString(),
+            ContentType: validateContentType(extension)
+        }).send(callback);
+}
+
+function uploadBase64ToS3(file, base64, destFileName, callback) {
+	var mime = guessFileMime(base64);
+  	fileBucket.upload({
+  		ACL: 'public-read',
+  		Body: file,
+  		Key: destFileName.toString()+getExtensionFromMime(mime),
+  		ContentType: mime
+  	}).send(callback);
+}
+
+function validateContentType(ext){
+	var images = ['jpg', 'jpeg', 'png', 'bmp', 'gif', 'tiff'];
+	var sounds = ['mp3'];
+	if (images.indexOf(ext) !== -1) {
+		if (ext == 'jpg') {
+			ext = 'jpeg';
+		};
+		return 'image/'+images[images.indexOf(ext)];
+	} else if (sounds.indexOf(ext) !== -1) {
+		return 'audio/'+sounds[sounds.indexOf(ext)];
+	} else{
+		return 'application/octet-stream';
+	}
+}
+
+function guessFileMime(data){
+  if(data.charAt(0)=='/'){
+    return "image/jpeg";
+  }else if(data.charAt(0)=='R'){
+    return "image/gif";
+  }else if(data.charAt(0)=='i'){
+    return "image/png";
+  } else if(data.charAt(0)=='S'){
+  	return "audio/mpeg";
+  } else{
+  	return 'application/octet-stream';
+  }
+}
+
+function getExtensionFromMime(data){
+  if(data == "image/jpeg"){
+    return ".jpg";
+  }else if(data == "image/gif"){
+    return ".gif";
+  }else if(data == "image/png"){
+    return ".png";
+  }else if(data == "audio/mpeg"){
+    return "audio/mp3";
+  }else{
+  	return "";
+  }
 }
 
 String.prototype.capitalize = function() {

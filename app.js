@@ -3,7 +3,6 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-var multer  = require('multer');
 var ejs = require('ejs');
 /* routes */
 var object = require('./routes/object');
@@ -28,9 +27,8 @@ app.set('view engine', 'ejs');
 app.engine('html', ejs.__express);
 
 app.use(logger('dev'));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(multer({ dest: './public/uploads/'}))
+app.use(bodyParser.urlencoded({ extended: true, limit: 20000000}));
+app.use(bodyParser.json({limit: 20000000}));
 
 /* app views */
 app.use(function (req, res, next) {
