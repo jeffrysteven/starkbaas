@@ -106,7 +106,7 @@ router.post('/filter/:object', RestEnsureAuthorized, function(req, res) {
     });
 });
 
-router.post('/object/:object', [RestEnsureAuthorized, multer(), uploadBase64Files, uploadFiles], function(req, res) {
+router.post('/object/:object', [RestEnsureAuthorized, multer(), uploadFiles, uploadBase64Files], function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -543,7 +543,7 @@ router.get('/object/:object/:id', RestEnsureAuthorized, function(req, res) {
     });
 });
 
-router.put('/object/:object/:id', [RestEnsureAuthorized, multer(), uploadBase64Files, uploadFiles], function(req, res) {
+router.put('/object/:object/:id', [RestEnsureAuthorized, multer(), uploadFiles, uploadBase64Files], function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -562,6 +562,7 @@ router.put('/object/:object/:id', [RestEnsureAuthorized, multer(), uploadBase64F
 				});
 			}catch(err){
 				console.log(err);
+				res.send('An error occured, please validate data and RECORD ID');
 			}
     	}else{
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
