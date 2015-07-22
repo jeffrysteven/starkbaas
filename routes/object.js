@@ -12,8 +12,8 @@ var dbConfig = {
   client: 'mysql',
   connection: {
     host: 'localhost',
-    user: 'root',
-    password: 'stk_root*/.',
+    user: 'xxxxxx',
+    password: 'xxxxxx',
     database: 'logistica',
     charset: 'utf8',
     timezone: 'utc-5'

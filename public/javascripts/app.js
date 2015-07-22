@@ -4,7 +4,6 @@ angular.module('stkbackend', ['ui.bootstrap', 'ui.router', 'ngStorage', 'stk.aut
   $httpProvider.interceptors.push(['$q', '$location', '$localStorage', function($q, $location, $localStorage) {
         return {
             'request': function (config) {
-              console.log('ajoooo');
               config.headers = config.headers || {};
               if ($localStorage.token) {
                   config.headers.Authorization =  $localStorage.token;
