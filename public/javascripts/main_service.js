@@ -4,15 +4,15 @@ factory('mainFactory',['$http','$q', '$filter', function($http, $q, $filter) {
   var urlBase = '/app';
   var dataFactory = {};
 
-  dataFactory.auth = function (data){
-    console.log(data);
+  dataFactory.menu = function (data){
     return $http({
-      method: 'POST',
-      url: urlBase + '/login',
+      method: 'GET',
+      url: urlBase + '/permissions',
       data: data,
       headers: {'Content-Type': 'application/json'}
     });
-  };
+  }
+
 	return dataFactory;
 }]).
 factory('socket', function($rootScope) {

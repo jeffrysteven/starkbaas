@@ -33,7 +33,7 @@ angular.module('stk.authentication',['ui.router','authenticationServices'])
 })
 .run( function run ($localStorage, $rootScope, $location) {
   if (typeof $localStorage.token !== 'undefined') {
-    $location.path('/');
+    $location.path('dashboard');
   }
 })
 .controller( 'AuthenticationCtrl', function AuthenticationCtrl( $rootScope, $scope, $location, authenticationFactory, $stateParams, $localStorage) {
@@ -48,7 +48,7 @@ angular.module('stk.authentication',['ui.router','authenticationServices'])
         $localStorage.token = data.token;
       };
       setTimeout(function(){
-        window.location = "/";
+        window.location = "dashboard";
       },1500);
     }).
     error(function(data, status, headers, config) {

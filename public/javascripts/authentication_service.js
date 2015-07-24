@@ -5,7 +5,6 @@ factory('authenticationFactory',['$http','$q', '$filter', function($http, $q, $f
   var dataFactory = {};
 
   dataFactory.auth = function (data){
-    console.log(data);
     return $http({
       method: 'POST',
       url: urlBase + '/login',

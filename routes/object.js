@@ -12,8 +12,8 @@ var dbConfig = {
   client: 'mysql',
   connection: {
     host: 'localhost',
-    user: 'xxxxxx',
-    password: 'xxxxxx',
+    user: 'root',
+    password: 'root',
     database: 'logistica',
     charset: 'utf8',
     timezone: 'utc-5'
@@ -855,6 +855,49 @@ router.get('/partialsfree/:module/:name', function(req, res) {
 	var name = req.params.name;
   	res.render(module + '/' + name + ".html");
   	//res.render("login.html");
+});
+
+router.get('/app/:object', RestEnsureAuthorized, function(req, res) {
+	var objSec = bookshelf.Model.extend({
+		tableName: 'user'
+	});
+	new objSec({token: req.token}).fetch()
+    .then(function(user) {
+    	if (user) {
+    		var table = req.params.object;
+    		var role = user.attributes.role_id;
+			var objModel = {tableName: table};
+			var object = bookshelf.Model.extend(objModel);
+    			new object().where({role_id:role, menu: 1}).fetchAll().then(function(model) {
+					if (model.toJSON().length > 0) {
+							var userData = user.toJSON();
+							var modelData = model.toJSON();
+							delete userData.token;
+							delete userData.id;
+							delete userData.password;
+							delete userData.salt;
+							delete userData.temp_str;
+							delete userData.deviceId;
+							var resdata = {};
+							resdata.res = true;
+							resdata.data = {};
+							resdata.data.user = userData;
+							resdata.data.permissions = modelData;
+							resdata.status = 200;
+							res.send(resdata);
+					}else{
+						res.json({'response':"No permissions", 'res':false, 'status': 200});
+					}
+				}).catch(function(err){
+					res.json(err);
+				});
+    	}else{
+    		res.json({'response':"Token not valid",'res':false, 'status': 600});
+    	}
+    }).catch(function(error) {
+      console.log(error);
+      res.send('An error occured'+error);
+    });
 });
 
 function setQuery (table, TableJSONobject, data) {

@@ -1,4 +1,4 @@
-angular.module('stkbackend', ['ui.bootstrap', 'ui.router', 'ngStorage', 'stk.authentication', 'stk.main'])
+angular.module('stkbackend', ['ui.bootstrap', 'smart-table', 'ui.router', 'ngStorage', 'stk.authentication', 'stk.main', 'stk.object'])
 .config( function stkbackendConfig ( $stateProvider, $urlRouterProvider, $httpProvider) {
   $urlRouterProvider.otherwise( '/' );
   $httpProvider.interceptors.push(['$q', '$location', '$localStorage', function($q, $location, $localStorage) {

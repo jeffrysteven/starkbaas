@@ -1,0 +1,45 @@
+<h1>Lista {{entity}}</h1>
+  <div class="table-responsive">
+    <table st-table="displayedCollection" st-pipe="get" class="table table-condensed table-hover">
+      <thead>
+        <tr>
+          <th colspan="{{columns.length+1}}">
+            <input st-search="" placeholder="Buscar..." type="text" class="form-control"/>
+          </th>
+        </tr>
+        <tr>
+			<th ng-repeat="col in columns" st-sort='{{col}}'>{{col}}</th>
+			<th>Acciones</td>
+		</tr>
+      </thead>
+      <tbody ng-show="!isLoading">
+        <tr ng-repeat="row in displayedCollection">
+        	<td ng-repeat="col in columns">{{row[col]}}</td>
+          <td>
+            <button type="button" ui-sref="colaborador_edit({id: {{row.id}} })" data-toggle="tooltip" data-placement="top" title="Editar" class="btn btn-sm btn-info"><i class="fa fa-pencil"></i></button>
+            <button type="button" ng-click="removeItem(row)" data-toggle="tooltip" data-placement="top" title="Eliminar" class="btn btn-sm btn-danger"><i class="fa fa-minus-circle"></i></button>
+          </td>
+        </tr>
+      </tbody>
+      <tbody ng-show="isLoading">
+        <tr>
+          <td colspan="{{columns.length+1}}" class="text-center">Cargando ...</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="5">
+            <div class="col-md-12">
+              <div class="col-md-8">
+                <a href="#/{{entity}}/form"><button class="btn btn-success pull-left add">Adicionar</button></a>
+              </div>
+              <div class="col-md-4">
+                <div st-pagination="" st-items-by-page="10" class="pull-right"></div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
