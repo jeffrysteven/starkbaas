@@ -13,6 +13,10 @@ angular.module('stk.main',['ui.router','mainServices'])
 })
 .run( function run ($localStorage, $rootScope, $location) {
   if (typeof $localStorage.token === 'undefined') {
+    var host = $location.host();
+    if (host.indexOf('.')) {
+      console.log(host.split('.')[0]);
+    };
     //$rootScope.$apply(function() { $location.path('/login') });
     $location.path('/login');
   }
@@ -20,14 +24,14 @@ angular.module('stk.main',['ui.router','mainServices'])
 .controller( 'MainCtrl', function MainCtrl($scope, $location, mainFactory, $stateParams, $localStorage) {
   $scope.rowCollection = [];
   $scope.displayedCollection = [];
-  var menu = mainFactory.menu();
-  menu.success(function(data, status, headers, config) {
-    $scope.menus = data.data.permissions;
-    $scope.user = data.data.user;
-    /*console.log($scope.menus);
-    console.log($scope.user);*/
-  }).
-  error(function(data, status, headers, config) {
-    console.log('Error: ' + data);
-  });
+  if (typeof $localStorage.token !== 'undefined') {
+    var menu = mainFactory.menu();
+    menu.success(function(data, status, headers, config) {
+      $scope.menus = data.data.permissions;
+      $scope.user = data.data.user;
+    }).
+    error(function(data, status, headers, config) {
+      console.log('Error: ' + data);
+    });
+  }
 });

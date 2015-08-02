@@ -61,7 +61,7 @@ angular.module('stk.authentication',['ui.router','authenticationServices'])
     data.
     success(function(data, status, headers, config) {
       setTimeout(function(){
-        window.location = "/";
+        window.location = "/login";
       },1500);
     }).
     error(function(data, status, headers, config) {

@@ -8,7 +8,7 @@ var multer  = require('multer');
 var AWS = require('aws-sdk');
 var fs = require('fs');
 
-/*var dbConfig = {
+var dbConfig = {
   client: 'mysql',
   connection: {
     host: 'localhost',
@@ -18,14 +18,9 @@ var fs = require('fs');
     charset: 'utf8',
     timezone: 'utc-5'
   }
-};*/
-
-var dbConfig = {};
-var knex;
-var bookshelf;
-
-/*var knex = require('knex')(dbConfig);
-var bookshelf = require('bookshelf')(knex);*/
+};
+var knex = require('knex')(dbConfig);
+var bookshelf = require('bookshelf')(knex);
 
 var awsconfig ={
 	"accessKeyId": "xxxxxx",
@@ -35,11 +30,9 @@ var awsconfig ={
 
 AWS.config.update(awsconfig);
 
-/*var fileBucket = new AWS.S3({params: {Bucket: 'logisticastarkmbaas'}});*/
+var fileBucket = new AWS.S3({params: {Bucket: 'logisticastarkmbaas'}});
 
-var fileBucket;
-
-router.post('/filter/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.post('/filter/:object', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -113,7 +106,7 @@ router.post('/filter/:object', [validateRestTenant, RestEnsureAuthorized], funct
     });
 });
 
-router.post('/object/:object', [validateRestTenant, RestEnsureAuthorized, multer(), uploadFiles, uploadBase64Files], function(req, res) {
+router.post('/object/:object', [RestEnsureAuthorized, multer(), uploadFiles, uploadBase64Files], function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -147,7 +140,7 @@ router.post('/object/:object', [validateRestTenant, RestEnsureAuthorized, multer
     });
 });
 
-router.post('/objectsearch/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.post('/objectsearch/:object', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -184,7 +177,7 @@ router.post('/objectsearch/:object', [validateRestTenant, RestEnsureAuthorized],
     });
 });
 
-router.get('/objectsearch/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.get('/objectsearch/:object', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -221,7 +214,7 @@ router.get('/objectsearch/:object', [validateRestTenant, RestEnsureAuthorized], 
     });
 });
 
-router.get('/object/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.get('/object/:object', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -248,7 +241,7 @@ router.get('/object/:object', [validateRestTenant, RestEnsureAuthorized], functi
     });
 });
 
-router.post('/objectrelated/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.post('/objectrelated/:object', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -302,7 +295,7 @@ router.post('/objectrelated/:object', [validateRestTenant, RestEnsureAuthorized]
     });
 });
 
-router.post('/objectmasterdetail/:master/:detail', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.post('/objectmasterdetail/:master/:detail', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -337,7 +330,7 @@ router.post('/objectmasterdetail/:master/:detail', [validateRestTenant, RestEnsu
     });
 });
 
-router.get('/object/:object/:id/:related', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.get('/object/:object/:id/:related', RestEnsureAuthorized, function(req, res) {
 
 
 	var objSec = bookshelf.Model.extend({
@@ -384,7 +377,7 @@ router.get('/object/:object/:id/:related', [validateRestTenant, RestEnsureAuthor
     });
 });
 
-router.get('/objectrans/:object/:id/:related', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.get('/objectrans/:object/:id/:related', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -430,7 +423,7 @@ router.get('/objectrans/:object/:id/:related', [validateRestTenant, RestEnsureAu
     });
 });
 
-router.get('/objectrelated/:object/:id/:related', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.get('/objectrelated/:object/:id/:related', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -475,7 +468,7 @@ router.get('/objectrelated/:object/:id/:related', [validateRestTenant, RestEnsur
     });
 });
 
-router.get('/objectin/:object/:id/:related', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.get('/objectin/:object/:id/:related', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -523,7 +516,7 @@ router.get('/objectin/:object/:id/:related', [validateRestTenant, RestEnsureAuth
     });
 });
 
-router.get('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.get('/object/:object/:id', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -550,7 +543,7 @@ router.get('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized], fu
     });
 });
 
-router.put('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized, multer(), uploadFiles, uploadBase64Files], function(req, res) {
+router.put('/object/:object/:id', [RestEnsureAuthorized, multer(), uploadFiles, uploadBase64Files], function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -580,7 +573,7 @@ router.put('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized, mul
     });
 });
 
-router.delete('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.delete('/object/:object/:id', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -597,7 +590,7 @@ router.delete('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized],
 				.then(function () {
 					res.json({message: table.capitalize() + ' successfully deleted', status: 200});
 				})
-				.catch(function (err) {
+				.otherwise(function (err) {
 					res.status(500).json({error: true, data: {message: err.message}});
 				});
 			});
@@ -610,7 +603,7 @@ router.delete('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized],
     });
 });
 
-router.post('/user/login', validateRestTenant, function(req, res) {
+router.post('/user/login', function(req, res) {
 	var data = req.body;
 	var email = data.email;
 	var password = data.password;
@@ -672,9 +665,12 @@ router.post('/user/register', function(req, res) {
 					});
 		  		};
 			}).catch(function(err){
+				console.log("the error ==== ");
+				console.log(err.code);
 				if (err.code === "ER_DUP_ENTRY") {
 					res.json({"error": err.code, "status": 500, "message": "Su correo electrónico ya esta registrado en nuestra base de datos"});
 				};
+				console.log("the error end ====");
 			});
 		}else{
 			res.json({"error": "Password_Weak", "status": 500, "message": "Password Inseguro"});
@@ -688,7 +684,7 @@ router.post('/user/register', function(req, res) {
 });
 
 
-router.post('/filterrelated/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.post('/filterrelated/:object', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -822,44 +818,46 @@ router.post('/filterrelated/:object', [validateRestTenant, RestEnsureAuthorized]
 });
 
 /* GET home page. */
-router.get('/', [validateTenant, FrontEnsureAuthorized], function(req, res) {
+router.get('/', FrontEnsureAuthorized, function(req, res) {
 	var object = bookshelf.Model.extend({
 		tableName: 'user'
 	});
 	new object({token: req.token}).fetch()
     .then(function(user) {
     	if (user) {
-    		res.render('index.html', {title: 'StarkBaas', userdata: user.toJSON()});
+    		res.render('index.html', {title: 'Stark Backend', userdata: user.toJSON()});
     	}else{
     		res.json({'response':"El usuario no existe",'res':false, 'status': 403});
     	}
     }).catch(function(error) {
+      console.log(error);
       res.send('An error occured');
     });
+  	//res.render('index.html', {title: 'Stark Backend'});
 });
 
-router.get('/apps', validateTenant, function(req, res) {
+router.get('/apps', function(req, res) {
   res.render('apps');
 });
 
-router.get('/login', validateTenant, function(req, res) {
-  res.render('login.html', {title: 'Login StarkBaas'});
+router.get('/login', function(req, res) {
+  res.render('login.html', {title: 'Login Stark Backend'});
 });
 
-router.get('/partials/:module/:name', [validateTenant, FrontEnsureAuthorized], function(req, res) {
+router.get('/partials/:module/:name', FrontEnsureAuthorized, function(req, res) {
 	var module = req.params.module;
 	var name = req.params.name;
   	res.render(module + '/' + name + ".html");
 });
 
-router.get('/partialsfree/:module/:name', validateTenant, function(req, res) {
+router.get('/partialsfree/:module/:name', function(req, res) {
 	var module = req.params.module;
 	var name = req.params.name;
   	res.render(module + '/' + name + ".html");
   	//res.render("login.html");
 });
 
-router.get('/app/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+router.get('/app/:object', RestEnsureAuthorized, function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -924,100 +922,6 @@ function setQuery (table, TableJSONobject, data) {
 	console.log(query);
 }
 
-
-/* subdomains */
-
-
-function validateRestTenant(req, res, next) {
-	var domain = req.get('host').match(/\w+/);
-	var subdomain = "";
-	if (domain) {
-		subdomain = domain[0];
-		validateDB(subdomain, function (bool){
-			if(bool){
-				dbConfig = {
-				  client: 'mysql',
-				  connection: {
-				    host: 'localhost',
-				    user: 'root',
-				    password: 'root',
-				    database: subdomain,
-				    charset: 'utf8',
-				    timezone: 'utc-5'
-				  }
-				};
-				knex = require('knex')(dbConfig);
-				bookshelf = require('bookshelf')(knex);
-				// change s3 bucket from db client credentials
-				fileBucket = new AWS.S3({params: {Bucket: 'logisticastarkmbaas'}});
-				next();
-			} else {
-				res.status(403).send({'response':"App resource not found, please specify your app",'res':false, 'status': 403});
-			}
-		});
-	} else {
-		res.status(403).send({'response':"App resource not found, please specify your app",'res':false, 'status': 403});
-	}
-}
-
-function validateTenant(req, res, next) {
-	var domain = req.get('host').match(/\w+/);
-	var subdomain = "";
-	if (domain) {
-		subdomain = domain[0];
-		validateDB(subdomain, function (bool){
-			if(bool){
-				dbConfig = {
-				  client: 'mysql',
-				  connection: {
-				    host: 'localhost',
-				    user: 'root',
-				    password: 'root',
-				    database: subdomain,
-				    charset: 'utf8',
-				    timezone: 'utc-5'
-				  }
-				};
-				knex = require('knex')(dbConfig);
-				bookshelf = require('bookshelf')(knex);
-				// change s3 bucket from db client credentials
-				fileBucket = new AWS.S3({params: {Bucket: 'logisticastarkmbaas'}});
-				next();
-			} else {
-				res.render('index.html', {title: 'StarkBaas - ', isLogged: false});
-			}
-		});
-	} else {
-		res.render('index.html', {title: 'StarkBaas - ', isLogged: false});
-	}
-}
-
-function validateDB(db, callback){
-	var mysql = require('mysql');
-	var connection = mysql.createConnection({
-	  host     : 'localhost',
-	  user     : 'root',
-	  password : 'root'
-	});
-	var query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = " + connection.escape(db);
-	connection.query(query, function(err, rows) {
-		var exists = false;
-		if (err){
-			exists = false;
-		} else {
-			if (rows.length > 0) {
-				exists = true;
-			} else {
-				exists = false;
-			}
-		}
-		connection.destroy();
-		callback(exists)
-	});
-}
-
-/* subdomains end */
-
 function FrontEnsureAuthorized(req, res, next) {
 	var bearerToken;
     var bearerHeader = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers["authorization"];
@@ -1027,7 +931,7 @@ function FrontEnsureAuthorized(req, res, next) {
         next();
     } else {
     	//res.redirect('login');
-    	res.render('dashboard.html', {title: 'StarkBaas', isLogged: false});
+    	res.render('index.html', {title: 'Stark Backend - Authentication', isLogged: false});
     	//res.status(403).send({'response':"Token not found",'res':false, 'status': 403});
     }
 }

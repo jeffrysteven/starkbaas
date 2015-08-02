@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="stkbackend", ng-controller="AppCtrl">
   <head>
     <meta charset="UTF-8">
-    <title><%= title %></title>
+    <title><%= title %> - {{ pageTitle }}</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link href="/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
@@ -17,8 +17,7 @@
     <![endif]-->
   </head>
   <body class="skin-yellow-light sidebar-mini" id="content">
-    <div class="wrapper">
-    <%= title %> sitio en construcción
+    <div class="wrapper" ui-view="main">
     </div><!-- ./wrapper -->
     <!-- REQUIRED JS SCRIPTS -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
