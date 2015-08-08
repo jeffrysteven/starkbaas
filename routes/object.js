@@ -641,7 +641,7 @@ router.post('/user/login', validateRestTenant, function(req, res) {
 });
 
 
-router.post('/user/register', function(req, res) {
+router.post('/user/register', validateRestTenant, function(req, res) {
 	var data = req.body;
 	var email = data.email;
 	var password = data.password;
