@@ -683,7 +683,7 @@ router.post('/user/register', validateRestTenant, function(req, res) {
 		res.json({"error": "Invalid_Email", "status": 500, "message": "Error no válido"});
 	}
 	}catch(err){
-		res.json({"error": "Generic", "status": 500, "message": "Error genérico"});
+		res.json({"error": "Generic", "status": 500, "message": "Error genérico "+err});
 	}
 });
 
