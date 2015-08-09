@@ -113,6 +113,142 @@ router.post('/filter/:object', [validateRestTenant, RestEnsureAuthorized], funct
     });
 });
 
+router.post('/filterrelatedsearch/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
+	var objSec = bookshelf.Model.extend({
+		tableName: 'user'
+	});
+	new objSec({token: req.token}).fetch()
+    .then(function(user) {
+    	if (user) {
+    		var table = req.params.object;
+			var data = req.body;
+			var sort_predicate = data.sortField;
+			var sort_order = data.sortDirection ? 'ASC' : 'DESC';
+			var offset = parseInt(data.start);
+			var limit = parseInt(data.number);
+			var filter = data.filter;
+			var filters = data.filters;
+			var object = bookshelf.Model.extend({
+				tableName: table
+			});
+			var related = data.related;
+			try {
+				if (filter !== "") {
+					/* BEGIN Final */
+					new object().query(function(obj){
+						obj.count('* as cantidad');
+					}).fetch().then(function (count) {
+						var objs = [];
+						json = {};
+						if (related.length > 1) {
+							for (var i = 0; i < related.length; i++) {
+								json['tableName'] = related[i];
+							    objs[i+1] = bookshelf.Model.extend(json);
+							};
+						}else{
+							json['tableName'] = related[0];
+							objs[1] = bookshelf.Model.extend(json);
+						}
+						var json = {};
+						json['tableName'] = table;
+						if (related.length > 1) {
+							for (var i = 0; i < related.length; i++) {
+								json[related[i]] = function() {
+									return this.belongsTo(objs[i+1]);
+						    	};
+							};
+						} else{
+							json[related[0]] = function() {
+								return this.belongsTo(objs[1]);
+						    };
+						}
+						objs[0] = bookshelf.Model.extend(json);
+						new objs[0]()
+						.query(function(ob){
+							if (data.sortField) {
+								ob.orderBy(sort_predicate, sort_order);
+							}else{
+								ob.orderBy('id', 'DESC');
+							}
+						})
+						.where(filters)
+						.fetchAll({withRelated: related, require: true})
+						.then(function(content) {
+						    var c = {};
+					    	c.data = content.toJSON();
+					    	c.dataInfo = {count: count.toJSON().cantidad};
+					      	res.send(c);
+						}).catch(function(error) {
+					      console.log(error);
+					      res.send('An error occured');
+					    });
+					});
+					/*  END Final */
+				}else{
+					/* BEGIN Final */
+					new object().query(function(obj){
+						obj.count('* as cantidad');
+					}).fetch().then(function (count) {
+						var objs = [];
+						json = {};
+						if (related.length > 1) {
+							for (var i = 0; i < related.length; i++) {
+								json['tableName'] = related[i];
+							    objs[i+1] = bookshelf.Model.extend(json);
+							};
+						}else{
+							json['tableName'] = related[0];
+							objs[1] = bookshelf.Model.extend(json);
+						}
+						var json = {};
+						json['tableName'] = table;
+						if (related.length > 1) {
+							for (var i = 0; i < related.length; i++) {
+								json[related[i]] = function() {
+									return this.belongsTo(objs[i+1]);
+						    	};
+							};
+						} else{
+							json[related[0]] = function() {
+								return this.belongsTo(objs[1]);
+						    };
+						}
+						objs[0] = bookshelf.Model.extend(json);
+						new objs[0]()
+						.query(function(ob){
+							ob.limit(limit).offset(offset);
+							if (data.sortField) {
+								ob.orderBy(sort_predicate, sort_order);
+							}else{
+								ob.orderBy('id', 'DESC');
+							}
+						})
+						.where(filters)
+						.fetchAll({withRelated: related, require: true})
+						.then(function(content) {
+						    var c = {};
+					    	c.data = content.toJSON();
+					    	c.dataInfo = {count: count.toJSON().cantidad};
+					      	res.send(c);
+						}).catch(function(error) {
+					      console.log(error);
+					      res.send('An error occured');
+					    });
+					});
+					/*  END Final */
+				}
+			}catch(err){
+				console.log(err);
+			}
+    	}else{
+    		res.json({'response':"Token not valid",'res':false, 'status': 600});
+    	}
+    }).catch(function(error) {
+      console.log(error);
+      res.send('An error occured'+error);
+    });
+});
+
 router.post('/object/:object', [validateRestTenant, RestEnsureAuthorized, multer(), uploadFiles, uploadBase64Files], function(req, res) {
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
