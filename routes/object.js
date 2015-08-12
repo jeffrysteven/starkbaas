@@ -1011,7 +1011,6 @@ router.get('/app/:object', [validateRestTenant, RestEnsureAuthorized], function(
 							var userData = user.toJSON();
 							var modelData = model.toJSON();
 							delete userData.token;
-							delete userData.id;
 							delete userData.password;
 							delete userData.salt;
 							delete userData.temp_str;
