@@ -763,7 +763,17 @@ router.post('/user/login', validateRestTenant, function(req, res) {
 	    	var newpass = salt + password;
 	    	var hashed_password = crypto.createHash('sha512').update(newpass).digest("hex");
 	    	if(hash_db == hashed_password){
-	    		res.json({'status':200, 'name': the_user.name, 'lastname': the_user.lastname, 'email': the_user.email, 'role': the_user.role_id, 'res': true, 'message': 'Bienvenido de nuevo '+ the_user.name + ' ' + the_user.lastname, 'token': token_db});
+	    		//res.json({'status':200, 'name': the_user.name, 'lastname': the_user.lastname, 'email': the_user.email, 'role': the_user.role_id, 'res': true, 'message': 'Bienvenido de nuevo '+ the_user.name + ' ' + the_user.lastname, 'token': token_db});
+	    		delete the_user.password;
+				delete the_user.salt;
+				delete the_user.temp_str;
+				delete the_user.deviceId;
+				the_user.status = 200;
+				the_user.res = true;
+				the_user.message = "Bienvenido de nuevo "+the_user.name+ " " + the_user.lastname;
+				the_user.role = the_user.role_id;
+				delete the_user.role_id;
+	    		res.json(the_user);
 			}else{
 				res.json({'response':"Invalid Password",'res':false, 'status': 600});
 			}
