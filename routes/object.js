@@ -72,10 +72,12 @@ router.post('/filter/:object', [validateRestTenant, RestEnsureAuthorized], funct
 					    	var c = {};
 					    	c.data = content.toJSON();
 					    	c.dataInfo = {count: count.toJSON().cantidad};
-					      res.send(c);
+					    	knex.destroy();
+					      	res.send(c);
 					    }).catch(function(error) {
-					      console.log(error);
-					      res.send('An error occured');
+					    	knex.destroy();
+					      	console.log(error);
+					      	res.send('An error occured');
 					    });
 					});
 				}else{
@@ -94,10 +96,12 @@ router.post('/filter/:object', [validateRestTenant, RestEnsureAuthorized], funct
 					    	var c = {};
 					    	c.data = content.toJSON();
 					    	c.dataInfo = {count: count.toJSON().cantidad};
-					      res.send(c);
+					    	knex.destroy();
+					      	res.send(c);
 					    }).catch(function(error) {
-					      console.log(error);
-					      res.send('An error occured');
+					    	knex.destroy();
+					      	console.log(error);
+					      	res.send('An error occured');
 					    });
 					});
 				};
@@ -108,11 +112,10 @@ router.post('/filter/:object', [validateRestTenant, RestEnsureAuthorized], funct
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    // close connections
-    knex.destroy();
 });
 
 router.post('/filterrelatedsearch/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -179,10 +182,12 @@ router.post('/filterrelatedsearch/:object', [validateRestTenant, RestEnsureAutho
 						    var c = {};
 					    	c.data = content.toJSON();
 					    	c.dataInfo = {count: count.toJSON().cantidad};
+					    	knex.destroy();
 					      	res.send(c);
 						}).catch(function(error) {
-					      console.log(error);
-					      res.send('An error occured');
+							knex.destroy();
+					      	console.log(error);
+					      	res.send('An error occured');
 					    });
 					});
 					/*  END Final */
@@ -231,15 +236,18 @@ router.post('/filterrelatedsearch/:object', [validateRestTenant, RestEnsureAutho
 						    var c = {};
 					    	c.data = content.toJSON();
 					    	c.dataInfo = {count: count.toJSON().cantidad};
+					    	knex.destroy();
 					      	res.send(c);
 						}).catch(function(error) {
-					      console.log(error);
-					      res.send('An error occured');
+							knex.destroy();
+					      	console.log(error);
+					      	res.send('An error occured');
 					    });
 					});
 					/*  END Final */
 				}
 			}catch(err){
+				knex.destroy();
 				console.log(err);
 			}
     	}else{
@@ -249,7 +257,6 @@ router.post('/filterrelatedsearch/:object', [validateRestTenant, RestEnsureAutho
       console.log(error);
       res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.post('/object/:object', [validateRestTenant, RestEnsureAuthorized, multer(), uploadFiles, uploadBase64Files], function(req, res) {
@@ -267,24 +274,29 @@ router.post('/object/:object', [validateRestTenant, RestEnsureAuthorized, multer
 				new object(data).save().then(function(model) {
 			  		new object({id:model.attributes.id}).fetch()
 				    .then(function(content) {
-				      res.send(content.toJSON());
+				    	knex.destroy();
+				      	res.send(content.toJSON());
 				    }).catch(function(error) {
-				      res.json(error);
+				    	knex.destroy();
+				      	res.json(error);
 				    });
 				}).catch(function(err){
+					knex.destroy();
 					res.json(err);
 				});
 			} else {
+				knex.destroy();
 				res.json({'response':"No se encontraron datos en su request",'res':false, 'status': 403});
 			}
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.post('/objectsearch/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -305,24 +317,29 @@ router.post('/objectsearch/:object', [validateRestTenant, RestEnsureAuthorized],
 						resdata.res = true;
 						resdata.data = model.toJSON();
 						resdata.status = 200;
+						knex.destroy();
 						res.send(resdata);
 					}else{
+						knex.destroy();
 						res.json({'response':"No hay datos para su consulta", 'res':false, 'status': 200});
 					}
 				}).catch(function(err){
+					knex.destroy();
 					res.json(err);
 				});
 			} else {
+				knex.destroy();
 				res.json({'response':"No se encontraron datos en su request",'res':false, 'status': 403});
 			}
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.get('/objectsearch/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -343,24 +360,29 @@ router.get('/objectsearch/:object', [validateRestTenant, RestEnsureAuthorized], 
 						resdata.res = true;
 						resdata.data = model.toJSON();
 						resdata.status = 200;
+						knex.destroy();
 						res.send(resdata);
 					}else{
+						knex.destroy();
 						res.json({'response':"No hay datos para su consulta", 'res':false, 'status': 200});
 					}
 				}).catch(function(err){
+					knex.destroy();
 					res.json(err);
 				});
 			} else {
+				knex.destroy();
 				res.json({'response':"No se encontraron datos en su request",'res':false, 'status': 403});
 			}
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.get('/object/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -376,19 +398,22 @@ router.get('/object/:object', [validateRestTenant, RestEnsureAuthorized], functi
 			});
 			new object().fetchAll()
 		    .then(function(content) {
-		      res.send(content.toJSON());
+		    	knex.destroy();
+		      	res.send(content.toJSON());
 		    }).catch(function(error) {
-		      console.log(error);
-		      res.send('An error occured');
+		    	knex.destroy();
+		      	console.log(error);
+		      	res.send('An error occured');
 		    });
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.post('/objectrelated/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -419,6 +444,7 @@ router.post('/objectrelated/:object', [validateRestTenant, RestEnsureAuthorized]
 						objfinal[related[i]] = new obj().fetchAll();
 					};
 					Promise.props(objfinal).then(function(result) {
+						knex.destroy();
 						res.send(result);
 					});
 				} else{
@@ -427,23 +453,27 @@ router.post('/objectrelated/:object', [validateRestTenant, RestEnsureAuthorized]
 					});
 					new object({id: id}).fetch()
 				    .then(function(content) {
-				      res.send(content.toJSON());
+				    	knex.destroy();
+				      	res.send(content.toJSON());
 				    }).catch(function(error) {
-				      console.log(error);
-				      res.send('An error occured');
+				    	knex.destroy();
+				      	console.log(error);
+				      	res.send('An error occured');
 				    });
 				}
 			}catch(err){
+				knex.destroy();
 				console.log(err);
 			}
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.post('/objectmasterdetail/:master/:detail', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -468,18 +498,21 @@ router.post('/objectmasterdetail/:master/:detail', [validateRestTenant, RestEnsu
 					element[master+"_id"] = masterobj.id;
 					new objectdetail(element).save();
 				});
+				knex.destroy();
 				res.json(masterobj.attributes);
 			}).catch(function(err){
+				knex.destroy();
 				res.json(err);
 			});
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.get('/object/:object/:id/:related', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -513,19 +546,22 @@ router.get('/object/:object/:id/:related', [validateRestTenant, RestEnsureAuthor
 		        .query({where: {id: id}})
 		        .fetch({withRelated: [related+"s"], require: true})
 		        .then(function(model) {
-		          res.send(model);
+		        	knex.destroy();
+		          	res.send(model);
 		        });
 			}catch(err){
+				knex.destroy();
 				console.log(err);
 			}
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.get('/objectrans/:object/:id/:related', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -560,19 +596,22 @@ router.get('/objectrans/:object/:id/:related', [validateRestTenant, RestEnsureAu
 		        .query({where: {id: id}})
 		        .fetch({withRelated: [related+"s"], require: true})
 		        .then(function(model) {
-		          res.send(model);
+		        	knex.destroy();
+		          	res.send(model);
 		        });
 			}catch(err){
+				knex.destroy();
 				console.log(err);
 			}
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.get('/objectrelated/:object/:id/:related', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -606,19 +645,22 @@ router.get('/objectrelated/:object/:id/:related', [validateRestTenant, RestEnsur
 		        .query({where: {id: id}})
 		        .fetch({withRelated: [related+"s"], require: true})
 		        .then(function(model) {
-		          res.send(model);
+		        	knex.destroy();
+		          	res.send(model);
 		        });
 			}catch(err){
+				knex.destroy();
 				console.log(err);
 			}
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.get('/objectin/:object/:id/:related', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -651,23 +693,27 @@ router.get('/objectin/:object/:id/:related', [validateRestTenant, RestEnsureAuth
 			    		var response = {};
 			    		response[table] = master.toJSON();
 			    		response[related] = content.toJSON();
+			    		knex.destroy();
 			    		res.send(response);
 			    	});
 			    }).catch(function(error) {
-			      console.log(error);
-			      res.send('An error occured');
+			    	knex.destroy();
+			      	console.log(error);
+			      	res.send('An error occured');
 			    });
 			}catch(err){
+				knex.destroy();
 				console.log(err);
 			}
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.get('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -683,19 +729,22 @@ router.get('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized], fu
 			});
 			new object({id:req.params.id}).fetch()
 		    .then(function(content) {
-		      res.send(content.toJSON());
+		    	knex.destroy();
+		      	res.send(content.toJSON());
 		    }).catch(function(error) {
-		      console.log(error);
-		      res.send('An error occured');
+		    	knex.destroy();
+		      	console.log(error);
+		      	res.send('An error occured');
 		    });
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.put('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized, multer(), uploadFiles, uploadBase64Files], function(req, res) {
@@ -713,20 +762,23 @@ router.put('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized, mul
 			});
 			try{
 				new object({id: id}).save(data, {patch: true}).then(function(model) {
+					knex.destroy();
 			  		res.json(model.attributes);
 				});
 			}catch(err){
+				knex.destroy();
 				console.log(err);
 				res.send('An error occured, please validate data and RECORD ID');
 			}
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.delete('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -744,20 +796,23 @@ router.delete('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized],
 			new object({id: id}).fetch({require: true}).then(function(model) {
 				model.destroy()
 				.then(function () {
+					knex.destroy();
 					res.json({message: table.capitalize() + ' successfully deleted', status: 200});
 				})
 				.catch(function (err) {
+					knex.destroy();
 					res.status(500).json({error: true, data: {message: err.message}});
 				});
 			});
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 router.post('/user/login', validateRestTenant, function(req, res) {
@@ -776,6 +831,7 @@ router.post('/user/login', validateRestTenant, function(req, res) {
 	    	var token_db = the_user.token;
 	    	var newpass = salt + password;
 	    	var hashed_password = crypto.createHash('sha512').update(newpass).digest("hex");
+	    	console.log(hash_db +" == "+ hashed_password);
 	    	if(hash_db == hashed_password){
 	    		//res.json({'status':200, 'name': the_user.name, 'lastname': the_user.lastname, 'email': the_user.email, 'role': the_user.role_id, 'res': true, 'message': 'Bienvenido de nuevo '+ the_user.name + ' ' + the_user.lastname, 'token': token_db});
 	    		delete the_user.password;
@@ -787,18 +843,22 @@ router.post('/user/login', validateRestTenant, function(req, res) {
 				the_user.message = "Bienvenido de nuevo "+the_user.name+ " " + the_user.lastname;
 				the_user.role = the_user.role_id;
 				delete the_user.role_id;
+				knex.destroy();
+				console.log(the_user);
 	    		res.json(the_user);
 			}else{
+				knex.destroy();
 				res.json({'response':"Invalid Password",'res':false, 'status': 600});
 			}
     	}else{
+    		knex.destroy();
     		res.json({'response':"El usuario no existe",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured');
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured');
     });
-    knex.destroy();
 });
 
 
@@ -829,10 +889,12 @@ router.post('/user/register', validateRestTenant, function(req, res) {
 		  		if (user) {
 		  			var the_token = jwt.sign(user, user.attributes.salt);
 		  			new object({id: user.attributes.id}).save({token: the_token}, {patch: true}).then(function(model) {
+		  				knex.destroy();
 	  					res.json(model.attributes);
 					});
 		  		};
 			}).catch(function(err){
+				knex.destroy();
 				if (err.code === "ER_DUP_ENTRY") {
 					res.json({"error": err.code, "status": 500, "message": "Su correo electrónico ya esta registrado en nuestra base de datos"});
 				};
@@ -846,7 +908,6 @@ router.post('/user/register', validateRestTenant, function(req, res) {
 	}catch(err){
 		res.json({"error": "Generic", "status": 500, "message": "Error genérico "+err});
 	}
-	knex.destroy();
 });
 
 
@@ -912,10 +973,12 @@ router.post('/filterrelated/:object', [validateRestTenant, RestEnsureAuthorized]
 						    var c = {};
 					    	c.data = content.toJSON();
 					    	c.dataInfo = {count: count.toJSON().cantidad};
+					    	knex.destroy();
 					      	res.send(c);
 						}).catch(function(error) {
-					      console.log(error);
-					      res.send('An error occured');
+							knex.destroy();
+					      	console.log(error);
+					      	res.send('An error occured');
 					    });
 					});
 					/*  END Final */
@@ -963,25 +1026,29 @@ router.post('/filterrelated/:object', [validateRestTenant, RestEnsureAuthorized]
 						    var c = {};
 					    	c.data = content.toJSON();
 					    	c.dataInfo = {count: count.toJSON().cantidad};
+					    	knex.destroy();
 					      	res.send(c);
 						}).catch(function(error) {
-					      console.log(error);
-					      res.send('An error occured');
+							knex.destroy();
+					      	console.log(error);
+					      	res.send('An error occured');
 					    });
 					});
 					/*  END Final */
 				}
 			}catch(err){
+				knex.destroy();
 				console.log(err);
 			}
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 /* GET home page. */
@@ -992,39 +1059,41 @@ router.get('/', [validateTenant, FrontEnsureAuthorized], function(req, res) {
 	new object({token: req.token}).fetch()
     .then(function(user) {
     	if (user) {
+    		knex.destroy();
     		res.render('index.html', {title: 'StarkBaas', userdata: user.toJSON()});
     	}else{
+    		knex.destroy();
     		res.json({'response':"El usuario no existe",'res':false, 'status': 403});
     	}
     }).catch(function(error) {
-      res.send('An error occured');
+    	knex.destroy();
+      	res.send('An error occured');
     });
-    knex.destroy();
 });
 
 router.get('/apps', validateTenant, function(req, res) {
-  res.render('apps');
-  knex.destroy();
+	knex.destroy();
+  	res.render('apps');
 });
 
 router.get('/login', validateTenant, function(req, res) {
-  res.render('login.html', {title: 'Login StarkBaas'});
-  knex.destroy();
+	knex.destroy();
+  	res.render('login.html', {title: 'Login StarkBaas'});
 });
 
 router.get('/partials/:module/:name', [validateTenant, FrontEnsureAuthorized], function(req, res) {
 	var module = req.params.module;
 	var name = req.params.name;
+	knex.destroy();
   	res.render(module + '/' + name + ".html");
-  	knex.destroy();
 });
 
 router.get('/partialsfree/:module/:name', validateTenant, function(req, res) {
 	var module = req.params.module;
 	var name = req.params.name;
+	knex.destroy();
   	res.render(module + '/' + name + ".html");
   	//res.render("login.html");
-  	knex.destroy();
 });
 
 router.get('/app/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -1053,21 +1122,25 @@ router.get('/app/:object', [validateRestTenant, RestEnsureAuthorized], function(
 							resdata.data.user = userData;
 							resdata.data.permissions = modelData;
 							resdata.status = 200;
+							knex.destroy();
 							res.send(resdata);
 					}else{
+						knex.destroy();
 						res.json({'response':"No permissions", 'res':false, 'status': 200});
 					}
 				}).catch(function(err){
+					knex.destroy();
 					res.json(err);
 				});
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
-    knex.destroy();
 });
 
 function setQuery (table, TableJSONobject, data) {
