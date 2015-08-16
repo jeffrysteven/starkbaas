@@ -111,6 +111,7 @@ router.post('/filter/:object', [validateRestTenant, RestEnsureAuthorized], funct
       console.log(error);
       res.send('An error occured'+error);
     });
+    // close connections
     knex.destroy();
 });
 
