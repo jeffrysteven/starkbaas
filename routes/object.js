@@ -1148,6 +1148,7 @@ function validateDB(db, callback){
 	connection.query(query, function(err, rows) {
 		var exists = false;
 		if (err){
+			console.log(err);
 			exists = false;
 		} else {
 			if (rows.length > 0) {
@@ -1157,7 +1158,9 @@ function validateDB(db, callback){
 			}
 		}
 		connection.destroy();
-		callback(exists)
+		console.log("respuesta del server ");
+		console.log(exists);
+		/// change 1 //callback(exists);
 	});
 }
 
