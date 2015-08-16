@@ -111,6 +111,7 @@ router.post('/filter/:object', [validateRestTenant, RestEnsureAuthorized], funct
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.post('/filterrelatedsearch/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -247,6 +248,7 @@ router.post('/filterrelatedsearch/:object', [validateRestTenant, RestEnsureAutho
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.post('/object/:object', [validateRestTenant, RestEnsureAuthorized, multer(), uploadFiles, uploadBase64Files], function(req, res) {
@@ -281,6 +283,7 @@ router.post('/object/:object', [validateRestTenant, RestEnsureAuthorized, multer
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.post('/objectsearch/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -318,6 +321,7 @@ router.post('/objectsearch/:object', [validateRestTenant, RestEnsureAuthorized],
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.get('/objectsearch/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -355,6 +359,7 @@ router.get('/objectsearch/:object', [validateRestTenant, RestEnsureAuthorized], 
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.get('/object/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -382,6 +387,7 @@ router.get('/object/:object', [validateRestTenant, RestEnsureAuthorized], functi
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.post('/objectrelated/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -436,6 +442,7 @@ router.post('/objectrelated/:object', [validateRestTenant, RestEnsureAuthorized]
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.post('/objectmasterdetail/:master/:detail', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -471,11 +478,10 @@ router.post('/objectmasterdetail/:master/:detail', [validateRestTenant, RestEnsu
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.get('/object/:object/:id/:related', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
-
-
 	var objSec = bookshelf.Model.extend({
 		tableName: 'user'
 	});
@@ -518,6 +524,7 @@ router.get('/object/:object/:id/:related', [validateRestTenant, RestEnsureAuthor
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.get('/objectrans/:object/:id/:related', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -564,6 +571,7 @@ router.get('/objectrans/:object/:id/:related', [validateRestTenant, RestEnsureAu
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.get('/objectrelated/:object/:id/:related', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -609,6 +617,7 @@ router.get('/objectrelated/:object/:id/:related', [validateRestTenant, RestEnsur
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.get('/objectin/:object/:id/:related', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -657,6 +666,7 @@ router.get('/objectin/:object/:id/:related', [validateRestTenant, RestEnsureAuth
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.get('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -684,6 +694,7 @@ router.get('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized], fu
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.put('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized, multer(), uploadFiles, uploadBase64Files], function(req, res) {
@@ -714,6 +725,7 @@ router.put('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized, mul
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.delete('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -744,6 +756,7 @@ router.delete('/object/:object/:id', [validateRestTenant, RestEnsureAuthorized],
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 router.post('/user/login', validateRestTenant, function(req, res) {
@@ -784,6 +797,7 @@ router.post('/user/login', validateRestTenant, function(req, res) {
       console.log(error);
       res.send('An error occured');
     });
+    knex.destroy();
 });
 
 
@@ -831,6 +845,7 @@ router.post('/user/register', validateRestTenant, function(req, res) {
 	}catch(err){
 		res.json({"error": "Generic", "status": 500, "message": "Error genérico "+err});
 	}
+	knex.destroy();
 });
 
 
@@ -965,6 +980,7 @@ router.post('/filterrelated/:object', [validateRestTenant, RestEnsureAuthorized]
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 /* GET home page. */
@@ -982,20 +998,24 @@ router.get('/', [validateTenant, FrontEnsureAuthorized], function(req, res) {
     }).catch(function(error) {
       res.send('An error occured');
     });
+    knex.destroy();
 });
 
 router.get('/apps', validateTenant, function(req, res) {
   res.render('apps');
+  knex.destroy();
 });
 
 router.get('/login', validateTenant, function(req, res) {
   res.render('login.html', {title: 'Login StarkBaas'});
+  knex.destroy();
 });
 
 router.get('/partials/:module/:name', [validateTenant, FrontEnsureAuthorized], function(req, res) {
 	var module = req.params.module;
 	var name = req.params.name;
   	res.render(module + '/' + name + ".html");
+  	knex.destroy();
 });
 
 router.get('/partialsfree/:module/:name', validateTenant, function(req, res) {
@@ -1003,6 +1023,7 @@ router.get('/partialsfree/:module/:name', validateTenant, function(req, res) {
 	var name = req.params.name;
   	res.render(module + '/' + name + ".html");
   	//res.render("login.html");
+  	knex.destroy();
 });
 
 router.get('/app/:object', [validateRestTenant, RestEnsureAuthorized], function(req, res) {
@@ -1045,6 +1066,7 @@ router.get('/app/:object', [validateRestTenant, RestEnsureAuthorized], function(
       console.log(error);
       res.send('An error occured'+error);
     });
+    knex.destroy();
 });
 
 function setQuery (table, TableJSONobject, data) {
@@ -1158,9 +1180,7 @@ function validateDB(db, callback){
 			}
 		}
 		connection.destroy();
-		console.log("respuesta del server ");
-		console.log(exists);
-		/// change 1 //callback(exists);
+		callback(exists);
 	});
 }
 
