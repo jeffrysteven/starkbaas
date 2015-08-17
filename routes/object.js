@@ -106,9 +106,11 @@ router.post('/filter/:object', [validateRestTenant, RestEnsureAuthorized], funct
 					});
 				};
 			}catch(err){
+				knex.destroy();
 				console.log(err);
 			}
-    	}else{
+    	} else {
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
@@ -251,11 +253,13 @@ router.post('/filterrelatedsearch/:object', [validateRestTenant, RestEnsureAutho
 				console.log(err);
 			}
     	}else{
+    		knex.destroy();
     		res.json({'response':"Token not valid",'res':false, 'status': 600});
     	}
     }).catch(function(error) {
-      console.log(error);
-      res.send('An error occured'+error);
+    	knex.destroy();
+      	console.log(error);
+      	res.send('An error occured'+error);
     });
 });
 
@@ -831,7 +835,6 @@ router.post('/user/login', validateRestTenant, function(req, res) {
 	    	var token_db = the_user.token;
 	    	var newpass = salt + password;
 	    	var hashed_password = crypto.createHash('sha512').update(newpass).digest("hex");
-	    	console.log(hash_db +" == "+ hashed_password);
 	    	if(hash_db == hashed_password){
 	    		//res.json({'status':200, 'name': the_user.name, 'lastname': the_user.lastname, 'email': the_user.email, 'role': the_user.role_id, 'res': true, 'message': 'Bienvenido de nuevo '+ the_user.name + ' ' + the_user.lastname, 'token': token_db});
 	    		delete the_user.password;
@@ -844,7 +847,6 @@ router.post('/user/login', validateRestTenant, function(req, res) {
 				the_user.role = the_user.role_id;
 				delete the_user.role_id;
 				knex.destroy();
-				console.log(the_user);
 	    		res.json(the_user);
 			}else{
 				knex.destroy();
@@ -1185,6 +1187,10 @@ function validateRestTenant(req, res, next) {
 				    database: subdomain,
 				    charset: 'utf8',
 				    timezone: 'utc-5'
+				  },
+				  pool: {
+				  	min: 0,
+				  	max: 500
 				  }
 				};
 				knex = require('knex')(dbConfig);
@@ -1217,6 +1223,10 @@ function validateTenant(req, res, next) {
 				    database: subdomain,
 				    charset: 'utf8',
 				    timezone: 'utc-5'
+				  },
+				  pool: {
+				  	min: 0,
+				  	max: 500
 				  }
 				};
 				knex = require('knex')(dbConfig);
